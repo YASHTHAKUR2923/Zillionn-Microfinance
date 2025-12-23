@@ -237,126 +237,114 @@ testimonialsTrack.addEventListener("mouseleave", () => {
 // CONTACT FORM VALIDATION
 // ===================================
 
-const contactForm = document.getElementById("contactForm")
-const nameInput = document.getElementById("name")
-const emailInput = document.getElementById("email")
-const phoneInput = document.getElementById("phone")
-const messageInput = document.getElementById("message")
-const successMessage = document.getElementById("successMessage")
+document.addEventListener("DOMContentLoaded", () => {
 
-// Validation functions
-const validateName = () => {
-  const name = nameInput.value.trim()
-  const nameError = document.getElementById("nameError")
+  const contactForm = document.getElementById("contactForm");
+  const nameInput = document.getElementById("name");
+  const emailInput = document.getElementById("email");
+  const phoneInput = document.getElementById("phone");
+  const messageInput = document.getElementById("message");
+  const successMessage = document.getElementById("successMessage");
 
-  if (name === "") {
-    nameError.textContent = "Name is required"
-    nameInput.style.borderColor = "#ef4444"
-    return false
-  } else if (name.length < 2) {
-    nameError.textContent = "Name must be at least 2 characters"
-    nameInput.style.borderColor = "#ef4444"
-    return false
-  } else {
-    nameError.textContent = ""
-    nameInput.style.borderColor = "rgba(16, 185, 129, 0.5)"
-    return true
-  }
-}
+  if (!contactForm) return; // safety check
 
-const validateEmail = () => {
-  const email = emailInput.value.trim()
-  const emailError = document.getElementById("emailError")
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  // =============================
+  // VALIDATION FUNCTIONS
+  // =============================
 
-  if (email === "") {
-    emailError.textContent = "Email is required"
-    emailInput.style.borderColor = "#ef4444"
-    return false
-  } else if (!emailRegex.test(email)) {
-    emailError.textContent = "Please enter a valid email"
-    emailInput.style.borderColor = "#ef4444"
-    return false
-  } else {
-    emailError.textContent = ""
-    emailInput.style.borderColor = "rgba(16, 185, 129, 0.5)"
-    return true
-  }
-}
+  const validateName = () => {
+    const nameError = document.getElementById("nameError");
+    if (nameInput.value.trim().length < 2) {
+      nameError.textContent = "Name must be at least 2 characters";
+      nameInput.style.borderColor = "#ef4444";
+      return false;
+    }
+    nameError.textContent = "";
+    nameInput.style.borderColor = "rgba(16,185,129,0.5)";
+    return true;
+  };
 
-const validatePhone = () => {
-  const phone = phoneInput.value.trim()
-  const phoneError = document.getElementById("phoneError")
+  const validateEmail = () => {
+    const emailError = document.getElementById("emailError");
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regex.test(emailInput.value.trim())) {
+      emailError.textContent = "Enter a valid email";
+      emailInput.style.borderColor = "#ef4444";
+      return false;
+    }
+    emailError.textContent = "";
+    emailInput.style.borderColor = "rgba(16,185,129,0.5)";
+    return true;
+  };
 
-  if (phone === "") {
-    phoneError.textContent = "Phone is required"
-    phoneInput.style.borderColor = "#ef4444"
-    return false
-  } else if (phone.length < 10) {
-    phoneError.textContent = "Please enter a valid phone number"
-    phoneInput.style.borderColor = "#ef4444"
-    return false
-  } else {
-    phoneError.textContent = ""
-    phoneInput.style.borderColor = "rgba(16, 185, 129, 0.5)"
-    return true
-  }
-}
+  const validatePhone = () => {
+    const phoneError = document.getElementById("phoneError");
+    if (phoneInput.value.trim().length < 10) {
+      phoneError.textContent = "Enter valid phone number";
+      phoneInput.style.borderColor = "#ef4444";
+      return false;
+    }
+    phoneError.textContent = "";
+    phoneInput.style.borderColor = "rgba(16,185,129,0.5)";
+    return true;
+  };
 
-const validateMessage = () => {
-  const message = messageInput.value.trim()
-  const messageError = document.getElementById("messageError")
+  const validateMessage = () => {
+    const messageError = document.getElementById("messageError");
+    if (messageInput.value.trim().length < 10) {
+      messageError.textContent = "Message must be at least 10 characters";
+      messageInput.style.borderColor = "#ef4444";
+      return false;
+    }
+    messageError.textContent = "";
+    messageInput.style.borderColor = "rgba(16,185,129,0.5)";
+    return true;
+  };
 
-  if (message === "") {
-    messageError.textContent = "Message is required"
-    messageInput.style.borderColor = "#ef4444"
-    return false
-  } else if (message.length < 10) {
-    messageError.textContent = "Message must be at least 10 characters"
-    messageInput.style.borderColor = "#ef4444"
-    return false
-  } else {
-    messageError.textContent = ""
-    messageInput.style.borderColor = "rgba(16, 185, 129, 0.5)"
-    return true
-  }
-}
+  // =============================
+  // SUBMIT HANDLER (MAILTO)
+  // =============================
 
-// Real-time validation
-nameInput.addEventListener("blur", validateName)
-emailInput.addEventListener("blur", validateEmail)
-phoneInput.addEventListener("blur", validatePhone)
-messageInput.addEventListener("blur", validateMessage)
+  contactForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-// Form submission
-contactForm.addEventListener("submit", (e) => {
-  e.preventDefault()
+    if (
+      validateName() &&
+      validateEmail() &&
+      validatePhone() &&
+      validateMessage()
+    ) {
+      const subject = encodeURIComponent("New Consultation Request");
+      const body = encodeURIComponent(
+`Hello Zillionn Microfinance Team,
 
-  const isNameValid = validateName()
-  const isEmailValid = validateEmail()
-  const isPhoneValid = validatePhone()
-  const isMessageValid = validateMessage()
+New enquiry received from website:
 
-  if (isNameValid && isEmailValid && isPhoneValid && isMessageValid) {
-    // Show success message with animation
-    successMessage.classList.add("show")
+Name: ${nameInput.value}
+Email: ${emailInput.value}
+Phone: ${phoneInput.value}
 
-    // Reset form
-    contactForm.reset()
+Message:
+${messageInput.value}
 
-    // Reset border colors
-    ;[nameInput, emailInput, phoneInput, messageInput].forEach((input) => {
-      input.style.borderColor = "rgba(255, 255, 255, 0.1)"
-    })
+Regards`
+      );
 
-    // Hide success message after 5 seconds
-    setTimeout(() => {
-      successMessage.classList.remove("show")
-    }, 5000)
+      // OPEN MAIL CLIENT
+      window.location.href =
+        `mailto:anant@zillionnmicrofinance.com?subject=${subject}&body=${body}`;
 
-    console.log("[v0] Form submitted successfully!")
-  }
-})
+      // SUCCESS UI
+      successMessage.classList.add("show");
+      contactForm.reset();
+
+      setTimeout(() => {
+        successMessage.classList.remove("show");
+      }, 5000);
+    }
+  });
+
+});
 
 // ===================================
 // NEWSLETTER FORM
