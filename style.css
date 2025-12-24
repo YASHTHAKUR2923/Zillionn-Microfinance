@@ -486,7 +486,7 @@ body {
 }
 
 .signature img {
-  max-width: 200px;
+  max-width: 250px;
   margin-bottom: var(--spacing-xs);
 }
 
